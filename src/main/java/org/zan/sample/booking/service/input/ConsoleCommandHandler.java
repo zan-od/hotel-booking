@@ -1,6 +1,7 @@
 package org.zan.sample.booking.service.input;
 
 public interface ConsoleCommandHandler {
-    boolean supports(String command);
-    String handle(String command);
+    boolean supports(String commandString);
+    AvailabilityCommand parseCommand(String commandString);
+    String handle(String commandString);
 }
