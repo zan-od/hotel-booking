@@ -4,13 +4,14 @@ import org.springframework.stereotype.Service;
 import org.zan.sample.booking.model.Booking;
 import org.zan.sample.booking.model.Hotel;
 import org.zan.sample.booking.model.RoomAvailability;
+import org.zan.sample.booking.service.search.data.HotelData;
 
 import java.time.LocalDate;
 import java.util.*;
 
 @Service
 public class InMemorySearchService implements SearchService {
-    private final Map<String, Hotel> hotels = new HashMap<>();
+    private final Map<String, HotelData> hotels = new HashMap<>();
     private final List<Booking> bookings = new ArrayList<>();
 
     @Override
@@ -21,7 +22,7 @@ public class InMemorySearchService implements SearchService {
 
     @Override
     public void addHotel(Hotel hotel) {
-        hotels.put(hotel.getId(), hotel);
+        hotels.put(hotel.getId(), new HotelData(hotel));
     }
 
     @Override
@@ -31,7 +32,7 @@ public class InMemorySearchService implements SearchService {
 
     @Override
     public Optional<Hotel> findHotel(String hotelId) {
-        return Optional.ofNullable(hotels.get(hotelId));
+        return Optional.ofNullable(hotels.get(hotelId).getHotel());
     }
 
     @Override
