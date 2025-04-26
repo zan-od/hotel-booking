@@ -9,8 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface SearchService {
-    void initHotels(List<Hotel> hotels);
-    void initBookings(List<Booking> bookings);
+    void clearData();
+    void addHotel(Hotel hotel);
+    void addBooking(Booking booking);
     Optional<Hotel> findHotel(String hotelId);
     List<RoomAvailability> calculateAvailability(Hotel hotel, String roomType, LocalDate startDate, LocalDate endDate);
 }

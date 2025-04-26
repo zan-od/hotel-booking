@@ -1,9 +1,11 @@
 package org.zan.sample.booking.service.input;
 
+import org.springframework.stereotype.Component;
 import org.zan.sample.booking.service.search.SearchService;
 
 import java.time.LocalDate;
 
+@Component
 public class AvailabilityCommandHandler extends AbstractCommandHandler{
     public AvailabilityCommandHandler(SearchService searchService) {
         super(searchService);

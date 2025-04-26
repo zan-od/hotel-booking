@@ -1,9 +1,12 @@
 package org.zan.sample.booking.service.input;
 
+import org.springframework.stereotype.Component;
+
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.Set;
 
+@Component
 public class ConsoleInputProcessor {
 
     private final Set<ConsoleCommandHandler> commandHandlers;
@@ -14,7 +17,7 @@ public class ConsoleInputProcessor {
 
     public void processInput(Scanner scanner) {
         while (true) {
-            System.out.print("Enter command: ");
+            System.out.print("Enter command: \n");
             String input = scanner.nextLine();
 
             if (input.isBlank()) {
@@ -22,7 +25,13 @@ public class ConsoleInputProcessor {
             }
 
             resolveHandler(input).ifPresentOrElse(
-                    handler -> System.out.println(handler.handle(input)),
+                    handler -> {
+                        try {
+                            System.out.println(handler.handle(input));
+                        } catch (IllegalArgumentException e) {
+                            System.out.println(e.getMessage());
+                        }
+                    },
                     () -> System.out.println("Unknown command: " + input)
             );
         }

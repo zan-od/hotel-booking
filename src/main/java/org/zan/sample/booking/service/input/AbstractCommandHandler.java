@@ -22,7 +22,7 @@ public abstract class AbstractCommandHandler implements ConsoleCommandHandler {
     public String handle(String commandString) {
         AvailabilityCommand command = parseCommand(commandString);
         Hotel hotel = searchService.findHotel(command.getHotelId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid command format - hotel not found: " + command.getHotelId()));
+                .orElseThrow(() -> new IllegalArgumentException("Hotel not found: " + command.getHotelId()));
 
         List<RoomAvailability> availabilities = searchService.calculateAvailability(
                 hotel, command.getRoomType(), command.getStartDate(), command.getEndDate());
