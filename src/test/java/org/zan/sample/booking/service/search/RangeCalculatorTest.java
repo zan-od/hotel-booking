@@ -20,14 +20,14 @@ class RangeCalculatorTest {
     void mergeZeroRanges() {
         Set<BookingRange> ranges = calculator.mergeRanges(List.of());
 
-        assertEquals(Set.of(), ranges);
+        assertEquals(sortedSetOf(), ranges);
     }
 
     @Test
     void mergeSingleRange() {
         Set<BookingRange> ranges = calculator.mergeRanges(List.of(range(1, 5, 1)));
 
-        assertEquals(Set.of(range(1, 5, 1)), ranges);
+        assertEquals(sortedSetOf(range(1, 5, 1)), ranges);
     }
 
     /**
@@ -42,7 +42,7 @@ class RangeCalculatorTest {
                 range(7, 8, 2)
         ));
 
-        Set<BookingRange> expected = Set.of(
+        Set<BookingRange> expected = sortedSetOf(
                 range(1, 5, 1),
                 range(7, 8, 2)
         );
@@ -66,7 +66,7 @@ class RangeCalculatorTest {
                 range(11, 14, 2)
         ));
 
-        Set<BookingRange> expected = Set.of(
+        Set<BookingRange> expected = sortedSetOf(
                 range(1, 8, 1),
                 range(9, 14, 2)
         );
@@ -86,7 +86,7 @@ class RangeCalculatorTest {
                 range(1, 5, 2)
         ));
 
-        Set<BookingRange> expected = Set.of(
+        Set<BookingRange> expected = sortedSetOf(
                 range(1, 5, 3)
         );
         assertEquals(expected, ranges);
@@ -105,7 +105,7 @@ class RangeCalculatorTest {
                 range(2, 4, 2)
         ));
 
-        Set<BookingRange> expected = Set.of(
+        Set<BookingRange> expected = sortedSetOf(
                 range(1, 1, 1),
                 range(2, 4, 3),
                 range(5, 5, 1)
@@ -126,7 +126,7 @@ class RangeCalculatorTest {
                 range(1, 3, 2)
         ));
 
-        Set<BookingRange> expected = Set.of(
+        Set<BookingRange> expected = sortedSetOf(
                 range(1, 3, 3),
                 range(4, 5, 1)
         );
@@ -146,7 +146,7 @@ class RangeCalculatorTest {
                 range(3, 5, 2)
         ));
 
-        Set<BookingRange> expected = Set.of(
+        Set<BookingRange> expected = sortedSetOf(
                 range(1, 2, 1),
                 range(3, 5, 3)
         );
@@ -169,8 +169,7 @@ class RangeCalculatorTest {
                 range(3, 13, 4)
         ));
 
-        Set<BookingRange> expected = new TreeSet<>(Comparator.comparing(BookingRange::getStartDate));
-        expected.addAll(List.of(
+        Set<BookingRange> expected = sortedSetOf(
                 range(1, 2, 1),
                 range(3, 4, 5),
                 range(5, 5, 4),
@@ -179,8 +178,104 @@ class RangeCalculatorTest {
                 range(11, 13, 7),
                 range(14, 15, 3),
                 range(17, 17, 3)
-        ));
+        );
         assertEquals(expected, ranges);
+    }
+
+    @Test
+    void subtractZeroRange() {
+        Set<BookingRange> ranges = calculator.subtractRanges(
+                range(1, 5, 10),
+                List.of()
+        );
+
+        assertEquals(sortedSetOf(range(1, 5, 10)), ranges);
+    }
+
+
+    /**
+     *   33333333333333333
+     *  1111 222  33333 3
+     *  ------------------
+     *   22231113300000303
+     */
+    @Test
+    void subtractSeveralRanges() {
+        Set<BookingRange> ranges = calculator.subtractRanges(
+                range(2, 18, 3),
+                List.of(
+                        range(1, 4, 1),
+                        range(6, 8, 2),
+                        range(11, 15, 3),
+                        range(17, 17, 3)
+                ));
+
+        Set<BookingRange> expected = sortedSetOf(
+                range(2, 4, 2),
+                range(5, 5, 3),
+                range(6, 8, 1),
+                range(9, 10, 3),
+                range(11, 15, 0),
+                range(16, 16, 3),
+                range(17, 17, 0),
+                range(18, 18, 3)
+        );
+        assertEquals(expected, ranges);
+    }
+
+    /**
+     *     33333333
+     *  11  11 222  33333 3
+     *  ------------------
+     *     32231113
+     */
+    @Test
+    void subtractSkipNonOverlappingRanges() {
+        Set<BookingRange> ranges = calculator.subtractRanges(
+                range(4, 11, 3),
+                List.of(
+                        range(1, 2, 1),
+                        range(5, 6, 1),
+                        range(8, 10, 2),
+                        range(13, 17, 3),
+                        range(19, 19, 3)
+                ));
+
+        Set<BookingRange> expected = sortedSetOf(
+                range(4, 4, 3),
+                range(5, 6, 2),
+                range(7, 7, 3),
+                range(8, 10, 1),
+                range(11, 11, 3)
+        );
+        assertEquals(expected, ranges);
+    }
+
+    @Test
+    void subtractFromBigRange() {
+        Set<BookingRange> ranges = calculator.subtractRanges(
+                range(1, 1000, 3),
+                List.of(
+                        range(1, 5, 1),
+                        range(100, 150, 2),
+                        range(700, 800, 3)
+                ));
+
+        Set<BookingRange> expected = sortedSetOf(
+                range(1, 5, 2),
+                range(6, 99, 3),
+                range(100, 150, 1),
+                range(151, 699, 3),
+                range(700, 800, 0),
+                range(801, 1000, 3)
+        );
+        assertEquals(expected, ranges);
+    }
+
+    private Set<BookingRange> sortedSetOf(BookingRange... ranges) {
+        Set<BookingRange> sortedSet = new TreeSet<>(Comparator.comparing(BookingRange::getStartDate).thenComparing(BookingRange::getEndDate));
+        sortedSet.addAll(List.of(ranges));
+        return sortedSet;
     }
 
     private BookingRange range(int startDate, int endDate, int count) {

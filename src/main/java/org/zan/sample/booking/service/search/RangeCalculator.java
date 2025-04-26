@@ -21,13 +21,59 @@ public class RangeCalculator {
         return mergeNeighbourRanges(mergedRanges);
     }
 
+    public Set<BookingRange> subtractRanges(BookingRange totalRange, List<BookingRange> ranges) {
+        Set<BookingRange> result = createRangeSet();
+        if (ranges.isEmpty()) {
+            result.add(totalRange);
+            return result;
+        }
+
+        List<BookingRange> sortedRanges = getSorted(ranges);
+
+        BookingRange previousRange = null;
+        for (BookingRange range : sortedRanges) {
+            if (!isOverlapping(range, totalRange)) {
+                continue;
+            }
+
+            if (previousRange == null) {
+                if (totalRange.getStartDate().isBefore(range.getStartDate())) {
+                    result.add(new BookingRange(totalRange.getStartDate(), range.getStartDate().minusDays(1), totalRange.getCount()));
+                }
+            }
+
+            LocalDate startDate = totalRange.getStartDate().isAfter(range.getStartDate()) ? totalRange.getStartDate() : range.getStartDate();
+            LocalDate endDate = totalRange.getEndDate().isBefore(range.getEndDate()) ? totalRange.getEndDate() : range.getEndDate();
+
+            result.add(new BookingRange(startDate, endDate, totalRange.getCount() - range.getCount()));
+
+            if (previousRange != null) {
+                if (previousRange.getEndDate().isBefore(range.getStartDate())) {
+                    result.add(new BookingRange(
+                            previousRange.getEndDate().plusDays(1),
+                            range.getStartDate().minusDays(1),
+                            totalRange.getCount()));
+                }
+            }
+            previousRange = range;
+        }
+
+        if (previousRange != null) {
+            if (totalRange.getEndDate().isAfter(previousRange.getEndDate())) {
+                result.add(new BookingRange(previousRange.getEndDate().plusDays(1), totalRange.getEndDate(), totalRange.getCount()));
+            }
+        }
+
+        return result;
+    }
+
     private static TreeSet<BookingRange> createRangeSet() {
         return new TreeSet<>(Comparator.comparing(BookingRange::getStartDate));
     }
 
     private List<BookingRange> getSorted(List<BookingRange> ranges) {
         List<BookingRange> sorted = new ArrayList<>(ranges);
-        sorted.sort(Comparator.comparing(BookingRange::getStartDate));
+        sorted.sort(Comparator.comparing(BookingRange::getStartDate).thenComparing(BookingRange::getEndDate));
         return sorted;
     }
 
