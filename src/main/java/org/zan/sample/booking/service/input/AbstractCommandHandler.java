@@ -1,6 +1,5 @@
 package org.zan.sample.booking.service.input;
 
-import org.zan.sample.booking.model.Hotel;
 import org.zan.sample.booking.model.RoomAvailability;
 import org.zan.sample.booking.service.search.SearchService;
 
@@ -21,11 +20,9 @@ public abstract class AbstractCommandHandler implements ConsoleCommandHandler {
     @Override
     public String handle(String commandString) {
         AvailabilityCommand command = parseCommand(commandString);
-        Hotel hotel = searchService.findHotel(command.getHotelId())
-                .orElseThrow(() -> new IllegalArgumentException("Hotel not found: " + command.getHotelId()));
 
         List<RoomAvailability> availabilities = searchService.calculateAvailability(
-                hotel, command.getRoomType(), command.getStartDate(), command.getEndDate());
+                command.getHotelId(), command.getRoomType(), command.getStartDate(), command.getEndDate());
 
         return formatAvailability(availabilities);
     }

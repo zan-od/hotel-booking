@@ -1,6 +1,7 @@
 package org.zan.sample.booking.service.input;
 
 import org.springframework.stereotype.Component;
+import org.zan.sample.booking.service.search.exception.EntityNotFoundException;
 
 import java.util.Optional;
 import java.util.Scanner;
@@ -28,7 +29,7 @@ public class ConsoleInputProcessor {
                     handler -> {
                         try {
                             System.out.println(handler.handle(input));
-                        } catch (IllegalArgumentException e) {
+                        } catch (IllegalArgumentException | EntityNotFoundException e) {
                             System.out.println(e.getMessage());
                         }
                     },

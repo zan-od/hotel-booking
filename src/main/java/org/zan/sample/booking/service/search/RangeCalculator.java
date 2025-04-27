@@ -1,11 +1,13 @@
 package org.zan.sample.booking.service.search;
 
+import org.springframework.stereotype.Service;
 import org.zan.sample.booking.service.search.data.BookingRange;
 
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Service
 public class RangeCalculator {
     public Set<BookingRange> mergeRanges(List<BookingRange> ranges) {
         NavigableSet<BookingRange> mergedRanges = createRangeSet();
@@ -62,6 +64,9 @@ public class RangeCalculator {
             if (totalRange.getEndDate().isAfter(previousRange.getEndDate())) {
                 result.add(new BookingRange(previousRange.getEndDate().plusDays(1), totalRange.getEndDate(), totalRange.getCount()));
             }
+        } else {
+            // no overlapping ranges
+            result.add(totalRange);
         }
 
         return result;

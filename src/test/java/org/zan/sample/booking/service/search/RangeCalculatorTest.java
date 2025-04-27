@@ -251,6 +251,27 @@ class RangeCalculatorTest {
         assertEquals(expected, ranges);
     }
 
+    /**
+     *     333
+     *  11    44
+     *  ------------------
+     *     333
+     */
+    @Test
+    void subtractNonOverlappingRanges() {
+        Set<BookingRange> ranges = calculator.subtractRanges(
+                range(4, 6, 3),
+                List.of(
+                        range(1, 2, 1),
+                        range(7, 8, 4)
+                ));
+
+        Set<BookingRange> expected = sortedSetOf(
+                range(4, 6, 3)
+        );
+        assertEquals(expected, ranges);
+    }
+
     @Test
     void subtractFromBigRange() {
         Set<BookingRange> ranges = calculator.subtractRanges(

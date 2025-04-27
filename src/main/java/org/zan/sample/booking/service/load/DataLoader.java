@@ -41,8 +41,7 @@ public class DataLoader {
                 .toList();
 
         searchService.clearData();
-        hotels.forEach(searchService::addHotel);
-        bookings.forEach(searchService::addBooking);
+        searchService.loadData(hotels, bookings);
     }
 
 

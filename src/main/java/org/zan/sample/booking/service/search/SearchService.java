@@ -10,8 +10,6 @@ import java.util.Optional;
 
 public interface SearchService {
     void clearData();
-    void addHotel(Hotel hotel);
-    void addBooking(Booking booking);
-    Optional<Hotel> findHotel(String hotelId);
-    List<RoomAvailability> calculateAvailability(Hotel hotel, String roomType, LocalDate startDate, LocalDate endDate);
+    void loadData(List<Hotel> hotels, List<Booking> bookings);
+    List<RoomAvailability> calculateAvailability(String hotelId, String roomType, LocalDate startDate, LocalDate endDate);
 }
