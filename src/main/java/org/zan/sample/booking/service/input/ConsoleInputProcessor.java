@@ -1,6 +1,7 @@
 package org.zan.sample.booking.service.input;
 
 import org.springframework.stereotype.Component;
+import org.zan.sample.booking.service.input.command.ConsoleCommandHandler;
 import org.zan.sample.booking.service.search.exception.EntityNotFoundException;
 
 import java.util.Optional;

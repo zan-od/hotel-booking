@@ -1,18 +1,34 @@
-package org.zan.sample.booking.service.input;
+package org.zan.sample.booking.service.input.command.availability;
 
 import org.springframework.stereotype.Component;
+import org.zan.sample.booking.model.RoomAvailability;
+import org.zan.sample.booking.service.input.command.ConsoleCommandHandler;
 import org.zan.sample.booking.service.search.SearchService;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import static org.zan.sample.booking.service.input.CommandUtils.*;
 
 @Component
-public class AvailabilityCommandHandler extends AbstractCommandHandler{
+public class AvailabilityCommandHandler implements ConsoleCommandHandler {
+    private final SearchService searchService;
+
     public AvailabilityCommandHandler(SearchService searchService) {
-        super(searchService);
+        this.searchService = searchService;
     }
 
     @Override
-    public AvailabilityCommand parseCommand(String command) {
+    public String handle(String commandString) {
+        AvailabilityCommand command = parseCommand(commandString);
+
+        List<RoomAvailability> availabilities = searchService.calculateAvailability(
+                command.getHotelId(), command.getRoomType(), command.getStartDate(), command.getEndDate());
+
+        return formatAvailability(availabilities);
+    }
+
+    AvailabilityCommand parseCommand(String command) {
         String parametersSubstring = command.substring(command.indexOf("(") + 1, command.length() - 1);
 
         String[] parameters = parametersSubstring.split(",");

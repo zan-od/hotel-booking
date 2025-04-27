@@ -1,4 +1,4 @@
-package org.zan.sample.booking.service.input;
+package org.zan.sample.booking.service.input.command.availability;
 
 import java.time.LocalDate;
 

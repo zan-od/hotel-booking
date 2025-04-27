@@ -1,7 +1,6 @@
 package org.zan.sample.booking.service.input;
 
 import org.zan.sample.booking.model.RoomAvailability;
-import org.zan.sample.booking.service.search.SearchService;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -9,23 +8,8 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class AbstractCommandHandler implements ConsoleCommandHandler {
+public class CommandUtils {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
-    protected final SearchService searchService;
-
-    public AbstractCommandHandler(SearchService searchService) {
-        this.searchService = searchService;
-    }
-
-    @Override
-    public String handle(String commandString) {
-        AvailabilityCommand command = parseCommand(commandString);
-
-        List<RoomAvailability> availabilities = searchService.calculateAvailability(
-                command.getHotelId(), command.getRoomType(), command.getStartDate(), command.getEndDate());
-
-        return formatAvailability(availabilities);
-    }
 
     public static String formatAvailability(List<RoomAvailability> availabilities) {
         return availabilities.stream()

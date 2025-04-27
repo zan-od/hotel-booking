@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static org.zan.sample.booking.service.input.AbstractCommandHandler.parseDate;
+import static org.zan.sample.booking.service.input.CommandUtils.parseDate;
 
 @Service
 public class DataLoader {

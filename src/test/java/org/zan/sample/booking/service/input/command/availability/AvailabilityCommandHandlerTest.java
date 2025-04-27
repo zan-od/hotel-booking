@@ -1,8 +1,7 @@
-package org.zan.sample.booking.service.input;
+package org.zan.sample.booking.service.input.command.availability;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.zan.sample.booking.model.Hotel;
 import org.zan.sample.booking.model.RoomAvailability;
 import org.zan.sample.booking.service.search.SearchService;
@@ -11,16 +10,35 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 class AvailabilityCommandHandlerTest {
 
-    @Mock
     private SearchService searchService;
     private AvailabilityCommandHandler handler;
 
     @BeforeEach
     void setUp() {
+        searchService = mock(SearchService.class);
         handler = new AvailabilityCommandHandler(searchService);
+    }
+
+    @Test
+    void handleCommand() {
+        Hotel hotel = new Hotel("H1", "Hotel", List.of());
+        when(searchService.calculateAvailability(
+                eq("H1"), eq("SGL"), eq(LocalDate.parse("2025-01-01")), eq(LocalDate.parse("2025-01-07"))))
+                .thenReturn(List.of(
+                        new RoomAvailability(hotel, "SGL", 5, LocalDate.parse("2025-01-01"), LocalDate.parse("2025-01-05")),
+                        new RoomAvailability(hotel, "SGL", -1, LocalDate.parse("2025-01-06"), LocalDate.parse("2025-01-06")),
+                        new RoomAvailability(hotel, "SGL", 0, LocalDate.parse("2025-01-07"), LocalDate.parse("2025-01-07"))
+                ));
+
+        String result = handler.handle("Availability(H1, 20250101-20250107, SGL)");
+
+        assertEquals("(20250101-20250105, 5), (20250106-20250106, -1), (20250107-20250107, 0)", result);
     }
 
     @Test
@@ -61,30 +79,5 @@ class AvailabilityCommandHandlerTest {
         assertThrows(IllegalArgumentException.class, () -> {
             handler.parseCommand(command);
         });
-    }
-
-    @Test
-    void formatEmptyAvailability() {
-        String result = AvailabilityCommandHandler.formatAvailability(List.of());
-        assertEquals("", result);
-    }
-
-    @Test
-    void formatSingleAvailability() {
-        Hotel hotel = new Hotel("H1", "Hotel 1", List.of());
-        String result = AvailabilityCommandHandler.formatAvailability(List.of(
-                new RoomAvailability(hotel, "SGL", 3, LocalDate.parse("2025-01-12"), LocalDate.parse("2025-01-15"))
-        ));
-        assertEquals("(20250112-20250115, 3)", result);
-    }
-
-    @Test
-    void formatMultipleAvailabilities() {
-        Hotel hotel = new Hotel("H1", "Hotel 1", List.of());
-        String result = AvailabilityCommandHandler.formatAvailability(List.of(
-                new RoomAvailability(hotel, "SGL", 3, LocalDate.parse("2025-01-12"), LocalDate.parse("2025-01-15")),
-                new RoomAvailability(hotel, "SGL", 2, LocalDate.parse("2025-01-17"), LocalDate.parse("2025-01-17"))
-        ));
-        assertEquals("(20250112-20250115, 3), (20250117-20250117, 2)", result);
     }
 }
