@@ -50,7 +50,7 @@ public class RangeCalculator {
             result.add(new BookingRange(startDate, endDate, totalRange.getCount() - range.getCount()));
 
             if (previousRange != null) {
-                if (previousRange.getEndDate().isBefore(range.getStartDate())) {
+                if (previousRange.getEndDate().plusDays(1).isBefore(range.getStartDate())) {
                     result.add(new BookingRange(
                             previousRange.getEndDate().plusDays(1),
                             range.getStartDate().minusDays(1),

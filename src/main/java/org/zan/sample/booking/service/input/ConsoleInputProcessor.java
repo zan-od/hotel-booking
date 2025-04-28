@@ -11,13 +11,15 @@ import java.util.Set;
 @Component
 public class ConsoleInputProcessor {
 
+    private final Scanner scanner;
     private final Set<ConsoleCommandHandler> commandHandlers;
 
-    public ConsoleInputProcessor(Set<ConsoleCommandHandler> commandHandlers) {
+    public ConsoleInputProcessor(Scanner scanner, Set<ConsoleCommandHandler> commandHandlers) {
+        this.scanner = scanner;
         this.commandHandlers = commandHandlers;
     }
 
-    public void processInput(Scanner scanner) {
+    public void processInput() {
         while (true) {
             System.out.print("Enter command: \n");
             String input = scanner.nextLine();

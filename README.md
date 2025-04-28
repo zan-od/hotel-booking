@@ -14,7 +14,7 @@ Search(H1, 365, SGL)
 If an user inputs and empty string, the application finishes
 
 ### How to build
-#### Requirements: jdk8+
+#### Requirements: jdk16+
 
 Download the project to a local machine. Open console, go to the project directory, run `gradle build` command:
 (Windows)

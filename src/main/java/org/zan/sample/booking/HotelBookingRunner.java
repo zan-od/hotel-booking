@@ -5,8 +5,6 @@ import org.springframework.stereotype.Component;
 import org.zan.sample.booking.service.input.ConsoleInputProcessor;
 import org.zan.sample.booking.service.load.DataLoader;
 
-import java.util.Scanner;
-
 @Component
 public class HotelBookingRunner implements CommandLineRunner {
     private final DataLoader dataLoader;
@@ -18,14 +16,13 @@ public class HotelBookingRunner implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         if (!loadData(args)) {
             System.out.println("Error: Failed to load data");
             return;
         }
 
-        Scanner scanner = new Scanner(System.in);
-        consoleInputProcessor.processInput(scanner);
+        consoleInputProcessor.processInput();
     }
 
     private boolean loadData(String[] args) {
