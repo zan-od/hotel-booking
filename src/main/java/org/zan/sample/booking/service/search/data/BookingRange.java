@@ -45,10 +45,6 @@ public class BookingRange {
 
     @Override
     public String toString() {
-        return "BookingRange{" +
-                "startDate=" + startDate +
-                ", endDate=" + endDate +
-                ", count=" + count +
-                '}';
+        return "{("+ startDate +", " + endDate + ")="+ count +"}";
     }
 }

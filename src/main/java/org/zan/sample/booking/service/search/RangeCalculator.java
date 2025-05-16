@@ -83,11 +83,7 @@ public class RangeCalculator {
     }
 
     private void addRange(NavigableSet<BookingRange> mergedRanges, BookingRange range) {
-        BookingRange previousRange = mergedRanges.lower(range);
-        Set<BookingRange> tail = previousRange == null ? mergedRanges : mergedRanges.tailSet(previousRange, true);
-        Set<BookingRange> overlappedRanges = tail.stream()
-                .filter(r -> isOverlapping(r, range))
-                .collect(Collectors.toSet());
+        Set<BookingRange> overlappedRanges = filterOverlappingRanges(mergedRanges, range);
 
         if (overlappedRanges.isEmpty()) {
             mergedRanges.add(range);
@@ -97,28 +93,47 @@ public class RangeCalculator {
         mergedRanges.removeAll(overlappedRanges);
 
         for (BookingRange overlappedRange : overlappedRanges) {
-            LocalDate innerStartDate = overlappedRange.getStartDate();
-            LocalDate innerEndDate = overlappedRange.getEndDate();
-
-            // old head - counter doesn't change
-            if (range.getStartDate().isAfter(overlappedRange.getStartDate())) {
-                mergedRanges.add(new BookingRange(overlappedRange.getStartDate(), range.getStartDate().minusDays(1), overlappedRange.getCount()));
-                innerStartDate = range.getStartDate();
-            }
-
-            // old tail - counter doesn't change
-            if (range.getEndDate().isBefore(overlappedRange.getEndDate())) {
-                mergedRanges.add(new BookingRange(range.getEndDate().plusDays(1), overlappedRange.getEndDate(),
-                        overlappedRange.getCount()));
-                innerEndDate = range.getEndDate();
-            } else if (range.getEndDate().isAfter(overlappedRange.getEndDate())) {
-                mergedRanges.add(new BookingRange(overlappedRange.getEndDate().plusDays(1), range.getEndDate(),
-                        range.getCount()));
-                innerEndDate = overlappedRange.getEndDate();
-            }
-
-            mergedRanges.add(new BookingRange(innerStartDate, innerEndDate, range.getCount() + overlappedRange.getCount()));
+            mergedRanges.addAll(mergeRanges(overlappedRange, range));
+            //System.out.println(mergedRanges);
         }
+    }
+
+    private Set<BookingRange> filterOverlappingRanges(NavigableSet<BookingRange> mergedRanges, BookingRange range) {
+        BookingRange previousRange = mergedRanges.lower(range);
+        Set<BookingRange> tail = previousRange == null ? mergedRanges : mergedRanges.tailSet(previousRange, true);
+        return tail.stream()
+                .filter(r -> isOverlapping(r, range))
+                .collect(Collectors.toSet());
+    }
+
+    private List<BookingRange> mergeRanges(BookingRange firstRange, BookingRange secondRange) {
+        LocalDate innerStartDate = firstRange.getStartDate();
+        LocalDate innerEndDate = firstRange.getEndDate();
+        List<BookingRange> result = new ArrayList<>();
+
+        // first or second range head - counter doesn't change
+        if (secondRange.getStartDate().isAfter(firstRange.getStartDate())) {
+            result.add(new BookingRange(firstRange.getStartDate(), secondRange.getStartDate().minusDays(1), firstRange.getCount()));
+            innerStartDate = secondRange.getStartDate();
+        } else if (secondRange.getStartDate().isBefore(firstRange.getStartDate())) {
+            result.add(new BookingRange(secondRange.getStartDate(), firstRange.getStartDate().minusDays(1), secondRange.getCount()));
+            innerStartDate = firstRange.getStartDate();
+        }
+
+        // first or second range tail - counter doesn't change
+        if (secondRange.getEndDate().isBefore(firstRange.getEndDate())) {
+            result.add(new BookingRange(secondRange.getEndDate().plusDays(1), firstRange.getEndDate(),
+                    firstRange.getCount()));
+            innerEndDate = secondRange.getEndDate();
+        } else if (secondRange.getEndDate().isAfter(firstRange.getEndDate())) {
+            result.add(new BookingRange(firstRange.getEndDate().plusDays(1), secondRange.getEndDate(),
+                    secondRange.getCount()));
+            innerEndDate = firstRange.getEndDate();
+        }
+
+        result.add(new BookingRange(innerStartDate, innerEndDate, secondRange.getCount() + firstRange.getCount()));
+
+        return result;
     }
 
     private Set<BookingRange> mergeNeighbourRanges(NavigableSet<BookingRange> ranges) {
