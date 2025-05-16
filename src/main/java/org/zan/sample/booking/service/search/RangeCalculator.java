@@ -92,10 +92,22 @@ public class RangeCalculator {
 
         mergedRanges.removeAll(overlappedRanges);
 
+        List<BookingRange> newRanges = List.of(range);
         for (BookingRange overlappedRange : overlappedRanges) {
-            mergedRanges.addAll(mergeRanges(overlappedRange, range));
-            //System.out.println(mergedRanges);
+            List<BookingRange> currentRanges = new ArrayList<>();
+
+            for (BookingRange newRange : newRanges) {
+                if (isOverlapping(newRange, overlappedRange)) {
+                    currentRanges.addAll(mergeRanges(newRange, overlappedRange));
+                } else {
+                    currentRanges.add(newRange);
+                }
+            }
+
+            newRanges = currentRanges;
         }
+
+        mergedRanges.addAll(newRanges);
     }
 
     private Set<BookingRange> filterOverlappingRanges(NavigableSet<BookingRange> mergedRanges, BookingRange range) {

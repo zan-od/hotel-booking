@@ -182,6 +182,83 @@ class RangeCalculatorTest {
         assertEquals(expected, ranges);
     }
 
+    /**
+     *  1111  111111
+     *    4444444
+     *  -----------------
+     *  115544555111
+     */
+    @Test
+    void mergeRangeOverlapsSeveralRanges1() {
+        Set<BookingRange> ranges = calculator.mergeRanges(List.of(
+                range(1, 4, 1),
+                range(7, 12, 1),
+                range(3, 9, 4)
+        ));
+
+        Set<BookingRange> expected = sortedSetOf(
+                range(1, 2, 1),
+                range(3, 4, 5),
+                range(5, 6, 4),
+                range(7, 9, 5),
+                range(10, 12, 1)
+        );
+        assertEquals(expected, ranges);
+    }
+
+    /**
+     *  1234567890123456789012345
+     *    111
+     *    111111111111111111111
+     *     111111
+     *  -------------------------
+     *    222111111111111111111
+     *     111111
+     *  -------------------------
+     *    233222211111111111111
+     */
+    @Test
+    void mergeThirdStartinginTheMiddleOfTwo() {
+        Set<BookingRange> ranges = calculator.mergeRanges(List.of(
+                range(3, 5, 1),
+                range(3, 23, 1),
+                range(4, 9, 1)
+        ));
+        Set<BookingRange> expected = sortedSetOf(
+                range(3, 3, 2),
+                range(4, 5, 3),
+                range(6, 9, 2),
+                range(10, 23, 1)
+        );
+        assertEquals(expected, ranges);
+    }
+
+    /** 123456789012
+     *    2221111111
+     *     111111
+     *      11
+     *  -------------------------
+     *    2343222111
+     */
+    @Test
+    void mergeThirdStartinginTheMiddleOfTwo1() {
+        Set<BookingRange> ranges = calculator.mergeRanges(List.of(
+                range(3, 5, 2),
+                range(4, 9, 1),
+                range(5, 6, 1),
+                range(6, 12, 1)
+        ));
+        Set<BookingRange> expected = sortedSetOf(
+                range(3, 3, 2),
+                range(4, 4, 3),
+                range(5, 5, 4),
+                range(6, 6, 3),
+                range(7, 9, 2),
+                range(10, 12, 1)
+        );
+        assertEquals(expected, ranges);
+    }
+
     @Test
     void subtractZeroRange() {
         Set<BookingRange> ranges = calculator.subtractRanges(
