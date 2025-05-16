@@ -1,0 +1,23 @@
+[
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "NonRefundable", "arrival": "20250103", "departure": "20250105"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "Prepaid", "arrival": "20250120", "departure": "20250122"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "NonRefundable", "arrival": "20250104", "departure": "20250109"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "NonRefundable", "arrival": "20250117", "departure": "20250123"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "AllInclusive", "arrival": "20250106", "departure": "20250110"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "Prepaid", "arrival": "20250116", "departure": "20250119"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "AllInclusive", "arrival": "20250109", "departure": "20250110"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "Prepaid", "arrival": "20250116", "departure": "20250117"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "NonRefundable", "arrival": "20250110", "departure": "20250111"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "AllInclusive", "arrival": "20250115", "departure": "20250116"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "Prepaid", "arrival": "20250107", "departure": "20250111"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "AllInclusive", "arrival": "20250113", "departure": "20250114"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "Prepaid", "arrival": "20250115", "departure": "20250119"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "AllInclusive", "arrival": "20250108", "departure": "20250109"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "NonRefundable", "arrival": "20250112", "departure": "20250113"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "NonRefundable", "arrival": "20250117", "departure": "20250118"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "AllInclusive", "arrival": "20250112", "departure": "20250114"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "NonRefundable", "arrival": "20250103", "departure": "20250123"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "Prepaid", "arrival": "20250105", "departure": "20250110"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "AllInclusive", "arrival": "20250116", "departure": "20250121"},
+  {"hotelId": "H1", "roomType": "DBL", "roomRate": "Prepaid", "arrival": "20250110", "departure": "20250116"}
+]
